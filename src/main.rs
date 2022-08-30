@@ -29,14 +29,14 @@ enum LetterState {
 #[derive(Debug, Clone)]
 struct Word {
     text: String,
-    state: [LetterState; 5],
+    state: Vec<LetterState>,
 }
 
 impl Word {
-    fn new() -> Word {
+    fn new(size: usize) -> Word {
         Word {
-            text: String::new(),
-            state: [LetterState::Unknown; 5],
+            text: " ".repeat(size),
+            state: vec![LetterState::Unknown; size],
         }
     }
 }
@@ -75,7 +75,7 @@ fn letter_color(state: LetterState) -> Style {
     }
 }
 
-fn compare_words(word: &str, to_match: &str) -> Result<[LetterState; 5], String> {
+fn compare_words(word: &str, to_match: &str) -> Result<Vec<LetterState>, String> {
     // this handles if word isn't 5 letters long
     // to_match is should always be 5 letters long
     if word.len() != to_match.len() && to_match.len() == 5 {
@@ -90,7 +90,7 @@ fn compare_words(word: &str, to_match: &str) -> Result<[LetterState; 5], String>
     }
 
     // initialize the array
-    let mut states: [LetterState; 5] = [LetterState::Unknown; 5];
+    let mut states: Vec<LetterState> = vec![LetterState::Unknown; 5];
 
     // find the state of each letter
     let match_bytes = to_match.as_bytes();
@@ -147,7 +147,7 @@ fn main() {
     let mut should_loop: bool = true;
     // setup tries
     let tries: u32 = 6;
-    let tried_word = vec![Word::new(); 6];
+    let tried_words = vec![Word::new(5); 6];
     // generate word
     let word_to_guess = String::from("ONSET");
 
@@ -159,6 +159,11 @@ fn main() {
             println!("|                Wordle                 |");
             println!("+---------------------------------------+");
         }
+        // print all tries
+        for tword in &tried_words {
+            print!("{}", tword);
+        }
+
         // read a word
         match read_word(&word_to_guess) {
             Err(e) => eprint!("{e} try again."),
