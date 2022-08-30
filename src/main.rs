@@ -1724,8 +1724,6 @@ fn main() {
         map.insert(ch, LetterState::Unknown);
     }
 
-    pause();
-
     // ====== Game Loop ======
     let mut won: bool = false;
 
