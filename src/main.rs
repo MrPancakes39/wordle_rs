@@ -14,6 +14,7 @@ fn pause() {
         .expect("couldn't read input");
 }
 
+#[derive(Clone, Copy)]
 enum LetterState {
     Correct,
     Present,
@@ -21,9 +22,26 @@ enum LetterState {
     Unknown,
 }
 
+#[derive(Clone, Copy)]
 struct Letter {
     ch: char,
     state: LetterState,
+}
+
+#[derive(Clone, Copy)]
+struct Word {
+    word: [Letter; 6],
+}
+
+impl Word {
+    fn new() -> Word {
+        Word {
+            word: [Letter {
+                ch: ' ',
+                state: LetterState::Unknown,
+            }; 6],
+        }
+    }
 }
 
 fn print_letter(letter: &Letter) {
@@ -66,31 +84,36 @@ fn main() {
             state: LetterState::Correct,
         })
         .collect();
+    // generate tries
+    let tries = 6;
+    let tried_words: [Word; 6] = [Word::new(); 6];
     // generate word
     let _word = String::from("Hello");
 
     // ====== Game Loop ======
     while should_loop {
+        clear();
+        let mut should_pause = true;
         // print header
         {
             println!("+---------------------------------------+");
             println!("|                Wordle                 |");
             println!("+---------------------------------------+");
         }
-
-        let mut entered_word: String = String::new();
-        loop {
-            print!("Enter a word: ");
-            stdout().flush().unwrap();
-            match read_word() {
-                Err(e) => println!("{e} try again."),
-                Ok(w) => {
-                    entered_word = w;
-                    break;
-                }
+        // read a word
+        print!("Enter a word: ");
+        stdout().flush().unwrap();
+        match read_word() {
+            Err(e) => println!("{e} try again."),
+            Ok(w) => {
+                let entered_word = w;
+                println!("'{entered_word}'");
+                should_pause = false;
+                should_loop = false;
             }
         }
-        println!("'{entered_word}'");
-        should_loop = false;
+        if (should_pause) {
+            pause();
+        }
     }
 }
