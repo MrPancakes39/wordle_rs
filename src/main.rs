@@ -2,6 +2,7 @@ use ansi_term::{Color, Style};
 use clearscreen;
 use std::{
     collections::HashMap,
+    fmt,
     io::{stdin, stdout, Write},
 };
 
@@ -37,6 +38,40 @@ impl Word {
             text: String::new(),
             state: [LetterState::Unknown; 5],
         }
+    }
+}
+
+impl fmt::Display for Word {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // ceiling
+        for _ in self.text.chars() {
+            write!(f, "+---")?;
+        }
+        write!(f, "+\n")?;
+
+        // letter
+        for (i, ch) in self.text.chars().enumerate() {
+            let style = letter_color(self.state[i]);
+            write!(f, "|{}", style.paint(format!(" {ch} ")))?;
+        }
+        write!(f, "|\n")?;
+
+        // floor
+        for _ in self.text.chars() {
+            write!(f, "+---")?;
+        }
+        write!(f, "+\n")?;
+
+        Ok(())
+    }
+}
+
+fn letter_color(state: LetterState) -> Style {
+    match state {
+        LetterState::Correct => Style::new().on(Color::RGB(83, 141, 78)).fg(Color::White),
+        LetterState::Present => Style::new().on(Color::RGB(181, 159, 59)).fg(Color::White),
+        LetterState::Absent => Style::new().on(Color::RGB(58, 58, 60)).fg(Color::White),
+        LetterState::Unknown => Style::new().on(Color::RGB(18, 18, 19)).fg(Color::White),
     }
 }
 
@@ -128,7 +163,7 @@ fn main() {
         match read_word(&word_to_guess) {
             Err(e) => eprint!("{e} try again."),
             Ok(guess) => {
-                println!("{:?}", guess);
+                println!("{}", guess);
             }
         }
 
