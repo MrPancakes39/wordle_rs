@@ -14,28 +14,26 @@ fn pause() {
         .expect("couldn't read input");
 }
 
-fn game_setup() -> String {
+fn main() {
+    // ====== Game Setup ======
     // configure ansi support for colors on windows.
     #[cfg(windows)]
     ansi_term::enable_ansi_support().unwrap();
-    // generate word
-    String::from("Hello")
-}
 
-fn game_loop(should_loop: &mut bool, word: &str) {
-    // print header
-    {
-        println!("+---------------------------------------+");
-        println!("|                Wordle                 |");
-        println!("+---------------------------------------+");
-    }
-    *should_loop = false;
-}
-
-fn main() {
+    // setup loop
     let mut should_loop: bool = true;
-    let word: String = game_setup();
+
+    // generate word
+    let _word = String::from("Hello");
+
+    // ====== Game Loop ======
     while should_loop {
-        game_loop(&mut should_loop, &word);
+        // print header
+        {
+            println!("+---------------------------------------+");
+            println!("|                Wordle                 |");
+            println!("+---------------------------------------+");
+        }
+        should_loop = false;
     }
 }
