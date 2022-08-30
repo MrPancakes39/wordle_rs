@@ -145,23 +145,44 @@ fn read_word(word: &str) -> Result<Word, String> {
     })
 }
 
+fn print_keyboard(map: &HashMap<char, LetterState>) {
+    let rows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
+    let padding = [0, 2, 6];
+    for i in 0..3 {
+        let str = String::from(rows[i]);
+        let mut states: Vec<LetterState> = vec![LetterState::Unknown; str.len()];
+        for (i, ch) in str.chars().enumerate() {
+            states[i] = *(*map).get(&ch).unwrap();
+        }
+        let word = Word {
+            text: str,
+            state: states,
+        };
+        word.padding_print(padding[i]);
+    }
+}
+
 fn main() {
     // ====== Game Setup ======
     // configure ansi support for colors on windows.
     #[cfg(windows)]
     ansi_term::enable_ansi_support().unwrap();
-    // setup loop
-    let mut should_loop: bool = true;
     // setup tries
     let mut tries: u32 = 6;
     let mut tried_words = vec![Word::new(5); 6];
     // generate word
-    let word_to_guess = String::from("ONSET");
+    let word_to_guess = String::from("NOSES");
+    // map letters to states
+    let mut map: HashMap<char, LetterState> = HashMap::new();
+    for ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ".chars() {
+        map.insert(ch, LetterState::Unknown);
+    }
 
     pause();
 
     // ====== Game Loop ======
-    while should_loop {
+    while tries != 0 {
+        // clear the screen
         clear();
         // print header
         {
@@ -170,23 +191,41 @@ fn main() {
             println!("+---------------------------------------+");
         }
         // print all tries
-        for tword in &tried_words {
+        for tword in &mut tried_words {
             tword.padding_print(10);
         }
-
-        let mut is_found = false;
+        // print the keyboard
+        print_keyboard(&map);
 
         // read a word
         match read_word(&word_to_guess) {
-            Err(e) => eprint!("{e} try again."),
+            Err(e) => {
+                eprintln!("{e} try again.");
+                pause();
+            }
             Ok(guess) => {
+                // lowers amount of tries
                 let index: usize = 6 as usize - tries as usize;
                 tried_words[index] = guess;
                 tries -= 1;
-                is_found = *&tried_words[index].text == word_to_guess;
+                // check if the word is found
+                if &tried_words[index].text == &word_to_guess {
+                    break;
+                }
+                // update mapping
+                for (i, ch) in (*&tried_words[index]).text.chars().enumerate() {
+                    let state = tried_words[index].state[i];
+                    map.entry(ch).and_modify(|e| {
+                        *e = match *e {
+                            LetterState::Absent | LetterState::Correct => *e,
+                            _ => match state {
+                                LetterState::Absent => *e,
+                                _ => state,
+                            },
+                        }
+                    });
+                }
             }
         }
-
-        should_loop = tries != 0 && !is_found;
     }
 }
