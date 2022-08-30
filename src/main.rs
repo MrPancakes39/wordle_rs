@@ -171,7 +171,7 @@ fn main() {
     let mut tries: u32 = 6;
     let mut tried_words = vec![Word::new(5); 6];
     // generate word
-    let word_to_guess = String::from("NOSES");
+    let word_to_guess = String::from("ONSET");
     // map letters to states
     let mut map: HashMap<char, LetterState> = HashMap::new();
     for ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ".chars() {
@@ -181,7 +181,9 @@ fn main() {
     pause();
 
     // ====== Game Loop ======
-    while tries != 0 {
+    let mut won: bool = false;
+
+    while tries != 0 && !won {
         // clear the screen
         clear();
         // print header
@@ -210,7 +212,7 @@ fn main() {
                 tries -= 1;
                 // check if the word is found
                 if &tried_words[index].text == &word_to_guess {
-                    break;
+                    won = true;
                 }
                 // update mapping
                 for (i, ch) in (*&tried_words[index]).text.chars().enumerate() {
@@ -225,7 +227,36 @@ fn main() {
                         }
                     });
                 }
+                // end update mapping
             }
         }
     }
+
+    // ====== Game End ======
+    // redraw the screen
+    {
+        // clear the screen
+        clear();
+        // print header
+        {
+            println!("+---------------------------------------+");
+            println!("|                Wordle                 |");
+            println!("+---------------------------------------+");
+        }
+        // print all tries
+        for tword in &mut tried_words {
+            tword.padding_print(10);
+        }
+        // print the keyboard
+        print_keyboard(&map);
+    }
+    if won {
+        println!("Congradulations, YOU WON!!! 🎉️");
+    } else {
+        println!("Too Bad! You lose...😢️");
+        println!("The word was: {}", word_to_guess);
+    }
+    // pause on windows for Console Host to not close the window
+    #[cfg(windows)]
+    pause();
 }
