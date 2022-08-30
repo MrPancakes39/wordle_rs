@@ -39,29 +39,36 @@ impl Word {
             state: vec![LetterState::Unknown; size],
         }
     }
+
+    fn padding_print(&self, padding: usize) {
+        let padding = " ".repeat(padding);
+        // ceiling
+        print!("{padding}");
+        for _ in self.text.chars() {
+            print!("+---");
+        }
+        print!("+\n");
+
+        // letter
+        print!("{padding}");
+        for (i, ch) in self.text.chars().enumerate() {
+            let style = letter_color(*self.state.get(i).unwrap());
+            print!("|{}", style.paint(format!(" {ch} ")));
+        }
+        print!("|\n");
+
+        // floor
+        print!("{padding}");
+        for _ in self.text.chars() {
+            print!("+---");
+        }
+        print!("+\n");
+    }
 }
 
 impl fmt::Display for Word {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // ceiling
-        for _ in self.text.chars() {
-            write!(f, "+---")?;
-        }
-        write!(f, "+\n")?;
-
-        // letter
-        for (i, ch) in self.text.chars().enumerate() {
-            let style = letter_color(self.state[i]);
-            write!(f, "|{}", style.paint(format!(" {ch} ")))?;
-        }
-        write!(f, "|\n")?;
-
-        // floor
-        for _ in self.text.chars() {
-            write!(f, "+---")?;
-        }
-        write!(f, "+\n")?;
-
+        self.padding_print(0);
         Ok(())
     }
 }
@@ -161,7 +168,7 @@ fn main() {
         }
         // print all tries
         for tword in &tried_words {
-            print!("{}", tword);
+            tword.padding_print(10);
         }
 
         // read a word
