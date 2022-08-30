@@ -24,6 +24,12 @@ fn main() {
 
     // ====== Game Loop ======
     while should_loop {
+        // print header
+        {
+            println!("+---------------------------------------+");
+            println!("|                Wordle                 |");
+            println!("+---------------------------------------+");
+        }
         should_loop = false;
     }
 }
