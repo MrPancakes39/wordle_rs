@@ -80,6 +80,29 @@ fn compare_words(word: &str, to_match: &str) -> Result<[LetterState; 5], String>
     Ok(states)
 }
 
+fn read_input() -> Result<String, String> {
+    print!("Enter a word: ");
+    stdout().flush().unwrap();
+
+    let mut line = String::new();
+    stdin().read_line(&mut line).unwrap();
+    line.truncate(line.trim_end().len());
+
+    match line.len() {
+        5 => Ok(line),
+        _ => Err(format!("'{line}' is not 5 letters long.")),
+    }
+}
+
+fn read_word(word: &str) -> Result<Word, String> {
+    let guess = read_input()?;
+    let states = compare_words(&guess, word)?;
+    Ok(Word {
+        text: guess,
+        state: states,
+    })
+}
+
 fn main() {
     // ====== Game Setup ======
     // configure ansi support for colors on windows.
@@ -91,7 +114,7 @@ fn main() {
     let tries: u32 = 6;
     let tried_word = vec![Word::new(); 6];
     // generate word
-    let unknown_word = String::from("ONSET");
+    let word_to_guess = String::from("ONSET");
 
     // ====== Game Loop ======
     while should_loop {
@@ -101,8 +124,14 @@ fn main() {
             println!("|                Wordle                 |");
             println!("+---------------------------------------+");
         }
-        let states = compare_words("MOIST", &unknown_word).unwrap();
-        println!("{:?}", states);
+        // read a word
+        match read_word(&word_to_guess) {
+            Err(e) => eprint!("{e} try again."),
+            Ok(guess) => {
+                println!("{:?}", guess);
+            }
+        }
+
         should_loop = false;
     }
 }
