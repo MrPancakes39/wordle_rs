@@ -36,6 +36,21 @@ fn print_letter(letter: &Letter) {
     print!("{}", style.paint(format!(" {} ", letter.ch.to_string())));
 }
 
+fn read_word() -> Result<String, String> {
+    let mut input = String::new();
+    stdin().read_line(&mut input).unwrap();
+    input.truncate(input.trim_end().len());
+
+    let len = input.len();
+    match len {
+        5 => {
+            input.make_ascii_uppercase();
+            Ok(input)
+        }
+        _ => Err("The entered word is not 5 letters long.".to_string()),
+    }
+}
+
 fn main() {
     // ====== Game Setup ======
     // configure ansi support for colors on windows.
@@ -62,6 +77,20 @@ fn main() {
             println!("|                Wordle                 |");
             println!("+---------------------------------------+");
         }
+
+        let mut entered_word: String = String::new();
+        loop {
+            print!("Enter a word: ");
+            stdout().flush().unwrap();
+            match read_word() {
+                Err(e) => println!("{e} try again."),
+                Ok(w) => {
+                    entered_word = w;
+                    break;
+                }
+            }
+        }
+        println!("'{entered_word}'");
         should_loop = false;
     }
 }
