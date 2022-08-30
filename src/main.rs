@@ -67,7 +67,7 @@ impl Word {
 }
 
 impl fmt::Display for Word {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, _f: &mut fmt::Formatter) -> fmt::Result {
         self.padding_print(0);
         Ok(())
     }
@@ -131,7 +131,7 @@ fn read_input() -> Result<String, String> {
     line.truncate(line.trim_end().len());
 
     match line.len() {
-        5 => Ok(line),
+        5 => Ok(line.to_ascii_uppercase()),
         _ => Err(format!("'{line}' is not 5 letters long.")),
     }
 }
@@ -153,13 +153,16 @@ fn main() {
     // setup loop
     let mut should_loop: bool = true;
     // setup tries
-    let tries: u32 = 6;
-    let tried_words = vec![Word::new(5); 6];
+    let mut tries: u32 = 6;
+    let mut tried_words = vec![Word::new(5); 6];
     // generate word
     let word_to_guess = String::from("ONSET");
 
+    pause();
+
     // ====== Game Loop ======
     while should_loop {
+        clear();
         // print header
         {
             println!("+---------------------------------------+");
@@ -171,14 +174,19 @@ fn main() {
             tword.padding_print(10);
         }
 
+        let mut is_found = false;
+
         // read a word
         match read_word(&word_to_guess) {
             Err(e) => eprint!("{e} try again."),
             Ok(guess) => {
-                println!("{}", guess);
+                let index: usize = 6 as usize - tries as usize;
+                tried_words[index] = guess;
+                tries -= 1;
+                is_found = *&tried_words[index].text == word_to_guess;
             }
         }
 
-        should_loop = false;
+        should_loop = tries != 0 && !is_found;
     }
 }
