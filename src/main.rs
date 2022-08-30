@@ -25,6 +25,21 @@ enum LetterState {
     Unknown,
 }
 
+#[derive(Debug, Clone)]
+struct Word {
+    text: String,
+    state: [LetterState; 5],
+}
+
+impl Word {
+    fn new() -> Word {
+        Word {
+            text: String::new(),
+            state: [LetterState::Unknown; 5],
+        }
+    }
+}
+
 fn compare_words(word: &str, to_match: &str) -> Result<[LetterState; 5], String> {
     // this handles if word isn't 5 letters long
     // to_match is should always be 5 letters long
@@ -72,6 +87,9 @@ fn main() {
     ansi_term::enable_ansi_support().unwrap();
     // setup loop
     let mut should_loop: bool = true;
+    // setup tries
+    let tries: u32 = 6;
+    let tried_word = vec![Word::new(); 6];
     // generate word
     let unknown_word = String::from("ONSET");
 
