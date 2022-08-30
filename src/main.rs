@@ -1765,9 +1765,10 @@ fn main() {
                     let state = tried_words[index].state[i];
                     map.entry(ch).and_modify(|e| {
                         *e = match *e {
+                            LetterState::Unknown => state,
                             LetterState::Absent | LetterState::Correct => *e,
-                            _ => match state {
-                                LetterState::Absent => *e,
+                            LetterState::Present => match state {
+                                LetterState::Absent | LetterState::Unknown => *e,
                                 _ => state,
                             },
                         }
