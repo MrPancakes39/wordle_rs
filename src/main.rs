@@ -1,6 +1,6 @@
-use std::io::{stdin, stdout, Write};
-
+use ansi_term;
 use clearscreen;
+use std::io::{stdin, stdout, Write};
 
 fn clear() {
     clearscreen::clear().expect("couldn't clear the screen");
@@ -15,20 +15,25 @@ fn pause() {
 }
 
 fn game_setup() {
-    clear();
-    println!("Hello Screen 1");
-    pause();
-
-    clear();
-    println!("Hello Screen 2");
-    pause();
+    // configure ansi support for colors on windows.
+    #[cfg(windows)]
+    ansi_term::enable_ansi_support().unwrap();
 }
 
-// fn game_loop() {}
+fn game_loop(should_loop: &mut bool) {
+    // print header
+    {
+        println!("+---------------------------------------+");
+        println!("|                Wordle                 |");
+        println!("+---------------------------------------+");
+    }
+    *should_loop = false;
+}
 
 fn main() {
+    let mut should_loop: bool = true;
     game_setup();
-    // loop {
-    //     game_loop();
-    // }
+    while should_loop {
+        game_loop(&mut should_loop);
+    }
 }
