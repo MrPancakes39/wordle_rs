@@ -14,13 +14,15 @@ fn pause() {
         .expect("couldn't read input");
 }
 
-fn game_setup() {
+fn game_setup() -> String {
     // configure ansi support for colors on windows.
     #[cfg(windows)]
     ansi_term::enable_ansi_support().unwrap();
+    // generate word
+    String::from("Hello")
 }
 
-fn game_loop(should_loop: &mut bool) {
+fn game_loop(should_loop: &mut bool, word: &str) {
     // print header
     {
         println!("+---------------------------------------+");
@@ -32,8 +34,8 @@ fn game_loop(should_loop: &mut bool) {
 
 fn main() {
     let mut should_loop: bool = true;
-    game_setup();
+    let word: String = game_setup();
     while should_loop {
-        game_loop(&mut should_loop);
+        game_loop(&mut should_loop, &word);
     }
 }
