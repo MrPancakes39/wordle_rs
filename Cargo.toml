@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 clearscreen = "1.0.10"
 ansi_term = "0.12.1"
+rand = "0.8.5"
