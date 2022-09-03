@@ -412,5 +412,6 @@ version = "0.1.0"
 dependencies = [
  "ansi_term",
  "clearscreen",
+ "lazy_static",
  "rand 0.8.5",
 ]
