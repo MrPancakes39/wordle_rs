@@ -157,7 +157,7 @@ fn read_input() -> Result<String, String> {
 
     match line.len() {
         5 => {
-            let line = line.to_ascii_uppercase();
+            line.make_ascii_uppercase();
             match valid_word(&line) {
                 true => Ok(line),
                 false => Err(format!("'{line}' is not a word.")),
