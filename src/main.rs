@@ -17,8 +17,7 @@ lazy_static! {
 }
 
 fn choose_word() -> String {
-    let answer = String::from(*ANSWERS.choose(&mut rand::thread_rng()).unwrap());
-    answer.to_ascii_uppercase()
+    String::from(*ANSWERS.choose(&mut rand::thread_rng()).unwrap())
 }
 
 fn valid_word(word: &str) -> bool {
