@@ -284,14 +284,63 @@ fn screen_play() {
     }
 }
 
+fn screen_tutorial() {
+    println!("Unimplemented yet.");
+}
+
 fn main() {
     // configure ansi support for colors on windows.
     #[cfg(windows)]
     ansi_term::enable_ansi_support().unwrap();
 
-    screen_play();
-
-    // pause on windows for Console Host to not close the window
-    #[cfg(windows)]
     pause();
+
+    let mut should_loop = true;
+
+    while should_loop {
+        // main screen
+        clear();
+        let header: String = format!("Wordle v{}", env!("CARGO_PKG_VERSION"));
+        println!("{}", header);
+        println!("{}", "=".repeat(header.len()));
+        println!("1. Play The Game.");
+        println!("2. How To Play.");
+        println!("3. Exit.");
+
+        // read answer
+        let choice: i32;
+        loop {
+            let mut buffer = String::new();
+            print!(": ");
+            stdout().flush().unwrap();
+            stdin()
+                .read_line(&mut buffer)
+                .expect("couldn't read from user");
+            let buffer = buffer.trim();
+            let n: i32 = match buffer.parse() {
+                Ok(n) => n,
+                Err(_e) => {
+                    eprintln!("Not a valid number. try again");
+                    continue;
+                }
+            };
+            if n < 1 || n > 3 {
+                eprintln!("Not a valid choice. try again");
+                continue;
+            }
+            choice = n;
+            break;
+        }
+
+        match choice {
+            1 => screen_play(),
+            2 => screen_tutorial(),
+            3 => should_loop = false,
+            _ => eprintln!("unreachable"),
+        }
+
+        if choice != 3 {
+            pause();
+        }
+    }
 }
