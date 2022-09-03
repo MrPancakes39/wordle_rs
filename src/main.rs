@@ -192,11 +192,8 @@ fn print_keyboard(map: &HashMap<char, LetterState>) {
     }
 }
 
-fn main() {
+fn screen_play() {
     // ====== Game Setup ======
-    // configure ansi support for colors on windows.
-    #[cfg(windows)]
-    ansi_term::enable_ansi_support().unwrap();
     // setup tries
     let mut tries: u32 = 6;
     let mut tried_words = vec![Word::new(5); 6];
@@ -285,6 +282,15 @@ fn main() {
         println!("Too Bad! You lose...😢️");
         println!("The word was: {}", word_to_guess);
     }
+}
+
+fn main() {
+    // configure ansi support for colors on windows.
+    #[cfg(windows)]
+    ansi_term::enable_ansi_support().unwrap();
+
+    screen_play();
+
     // pause on windows for Console Host to not close the window
     #[cfg(windows)]
     pause();
