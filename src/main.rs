@@ -52,7 +52,7 @@ struct Word {
 }
 
 impl Word {
-    fn new(size: usize) -> Word {
+    fn new(size: usize) -> Self {
         Word {
             text: " ".repeat(size),
             state: vec![LetterState::Unknown; size],
