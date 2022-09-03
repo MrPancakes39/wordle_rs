@@ -217,7 +217,7 @@ fn screen_play() {
             println!("+---------------------------------------+");
         }
         // print all tries
-        for tword in &mut tried_words {
+        for tword in &tried_words {
             tword.padding_print(10);
         }
         // print the keyboard
