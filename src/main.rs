@@ -285,7 +285,36 @@ fn screen_play() {
 }
 
 fn screen_tutorial() {
-    println!("Unimplemented yet.");
+    clear();
+    println!("HOW TO PLAY");
+    println!("===========");
+    println!("Guess the WORDLE in 6 tries.");
+    println!("Each guess must be a valid 5-letter word. Hit the enter button to submit.");
+    println!("After each guess, the color of the tiles will change to show how close your guess was to the word.");
+    println!("---");
+    println!("Example:");
+    let mut word = Word {
+        text: String::from("WEARY"),
+        state: vec![LetterState::Unknown; 5],
+    };
+    word.state[0] = LetterState::Correct;
+    print!("{}", word);
+    println!("The letter W is in the word and in the correct spot.");
+    let mut word = Word {
+        text: String::from("PILLS"),
+        state: vec![LetterState::Unknown; 5],
+    };
+    word.state[1] = LetterState::Present;
+    print!("{}", word);
+    println!("The letter I is in the word but in the wrong spot.");
+    let mut word = Word {
+        text: String::from("VAGUE"),
+        state: vec![LetterState::Unknown; 5],
+    };
+    word.state[3] = LetterState::Absent;
+    print!("{}", word);
+    println!("The letter U is not in the word in any spot.");
+    println!("---");
 }
 
 fn main() {
