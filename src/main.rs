@@ -322,8 +322,6 @@ fn main() {
     #[cfg(windows)]
     ansi_term::enable_ansi_support().unwrap();
 
-    pause();
-
     let mut should_loop = true;
 
     while should_loop {
