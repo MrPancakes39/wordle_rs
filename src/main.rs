@@ -60,35 +60,34 @@ impl Word {
     }
 
     fn padding_print(&self, padding: usize) {
-        let padding = " ".repeat(padding);
-        // ceiling
-        print!("{padding}");
-        for _ in self.text.chars() {
-            print!("+---");
+        let txt = format!("{}", self);
+        let pad = " ".repeat(padding);
+        for line in txt.lines() {
+            println!("{}{}", pad, line);
         }
-        print!("+\n");
-
-        // letter
-        print!("{padding}");
-        for (i, ch) in self.text.chars().enumerate() {
-            let style = letter_color(*self.state.get(i).unwrap());
-            print!("|{}", style.paint(format!(" {ch} ")));
-        }
-        print!("|\n");
-
-        // floor
-        print!("{padding}");
-        for _ in self.text.chars() {
-            print!("+---");
-        }
-        print!("+\n");
     }
 }
 
 impl fmt::Display for Word {
-    fn fmt(&self, _f: &mut fmt::Formatter) -> fmt::Result {
-        self.padding_print(0);
-        Ok(())
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // ceiling
+        for _ in self.text.chars() {
+            write!(f, "+---")?;
+        }
+        write!(f, "+\n")?;
+
+        // letter
+        for (i, ch) in self.text.chars().enumerate() {
+            let style = letter_color(*self.state.get(i).unwrap());
+            write!(f, "|{}", style.paint(format!(" {ch} ")))?;
+        }
+        write!(f, "|\n")?;
+
+        // floor
+        for _ in self.text.chars() {
+            write!(f, "+---")?;
+        }
+        write!(f, "+\n")
     }
 }
 
