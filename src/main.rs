@@ -37,7 +37,7 @@ fn pause() {
         .expect("couldn't read input");
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum LetterState {
     Correct,
     Present,
@@ -119,21 +119,28 @@ fn compare_words(word: &str, to_match: &str) -> Result<Vec<LetterState>, String>
 
     // find the state of each letter
     let match_bytes = to_match.as_bytes();
+
+    // Find all Correct Letters
     for (i, ch) in word.chars().enumerate() {
-        // if the letter isn't in the to_match word
-        // or if it's count is 0
-        if !letters.contains_key(&ch) || *letters.get(&ch).unwrap() == 0 {
-            states[i] = LetterState::Absent;
-        } else {
-            // else we compare the letters
-            let comp: char = match_bytes[i] as char;
-            states[i] = if ch == comp {
-                LetterState::Correct
-            } else {
-                LetterState::Present
-            };
+        let comp: char = match_bytes[i] as char;
+        if ch == comp {
+            states[i] = LetterState::Correct;
             // and we decrease the count of the letter to account for duplicates
             letters.entry(ch).and_modify(|e| *e -= 1);
+        }
+    }
+
+    // Then assign Present or Absent to the rest
+    for (i, ch) in word.chars().enumerate() {
+        if states[i] != LetterState::Correct {
+            // if the letter isn't in the to_match word
+            // or if it's count is 0
+            if !letters.contains_key(&ch) || *letters.get(&ch).unwrap() == 0 {
+                states[i] = LetterState::Absent;
+            } else {
+                states[i] = LetterState::Present;
+                letters.entry(ch).and_modify(|e| *e -= 1);
+            }
         }
     }
 
