@@ -286,6 +286,7 @@ fn screen_play() {
             println!("Too Bad! You lose...😢️");
             println!("The word was: {}", word_to_guess);
         }
+        pause();
     }
 }
 
@@ -296,6 +297,7 @@ fn screen_tutorial() {
     println!("Guess the WORDLE in 6 tries.");
     println!("Each guess must be a valid 5-letter word. Hit the enter button to submit.");
     println!("After each guess, the color of the tiles will change to show how close your guess was to the word.");
+    println!("You can also type EXIT to quit the game.");
     println!("---");
     println!("Example:");
     let mut word = Word {
@@ -320,6 +322,7 @@ fn screen_tutorial() {
     print!("{}", word);
     println!("The letter U is not in the word in any spot.");
     println!("---");
+    pause();
 }
 
 fn main() {
@@ -369,10 +372,6 @@ fn main() {
             2 => screen_tutorial(),
             3 => should_loop = false,
             _ => eprintln!("unreachable"),
-        }
-
-        if choice != 3 {
-            pause();
         }
     }
 }
