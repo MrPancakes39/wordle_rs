@@ -10,9 +10,9 @@ use std::{
 };
 
 lazy_static! {
-    static ref A: String = read_to_string("src/data/answers.txt").expect("missing answers.txt");
+    static ref A: String = read_to_string("./data/answers.txt").expect("missing answers.txt");
     static ref ANSWERS: Vec<&'static str> = A.lines().collect();
-    static ref B: String = read_to_string("src/data/allowed.txt").expect("missing allowed.txt");
+    static ref B: String = read_to_string("./data/allowed.txt").expect("missing allowed.txt");
     static ref ALLOWED: Vec<&'static str> = B.lines().collect();
 }
 
