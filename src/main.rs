@@ -147,14 +147,19 @@ fn read_input() -> Result<String, String> {
     stdin().read_line(&mut line).unwrap();
     line.truncate(line.trim_end().len());
 
+    // for case insensitivity
+    line.make_ascii_uppercase();
+
+    // if user wants to exit
+    if line == "EXIT" {
+        return Err(line);
+    }
+
     match line.len() {
-        5 => {
-            line.make_ascii_uppercase();
-            match valid_word(&line) {
-                true => Ok(line),
-                false => Err(format!("'{line}' is not a word.")),
-            }
-        }
+        5 => match valid_word(&line) {
+            true => Ok(line),
+            false => Err(format!("'{line}' is not a word.")),
+        },
         _ => Err(format!("'{line}' is not 5 letters long.")),
     }
 }
@@ -200,8 +205,9 @@ fn screen_play() {
 
     // ====== Game Loop ======
     let mut won: bool = false;
+    let mut should_exit = false;
 
-    while tries != 0 && !won {
+    while !should_exit && tries != 0 && !won {
         // clear the screen
         clear();
         // print header
@@ -220,8 +226,12 @@ fn screen_play() {
         // read a word
         match read_word(&word_to_guess) {
             Err(e) => {
-                eprintln!("{e} try again.");
-                pause();
+                if e == "EXIT" {
+                    should_exit = true;
+                } else {
+                    eprintln!("{e} try again.");
+                    pause();
+                }
             }
             Ok(guess) => {
                 // lowers amount of tries
@@ -252,28 +262,30 @@ fn screen_play() {
     }
 
     // ====== Game End ======
-    // redraw the screen
-    {
-        // clear the screen
-        clear();
-        // print header
+    if should_exit == false {
+        // redraw the screen
         {
-            println!("+---------------------------------------+");
-            println!("|                Wordle                 |");
-            println!("+---------------------------------------+");
+            // clear the screen
+            clear();
+            // print header
+            {
+                println!("+---------------------------------------+");
+                println!("|                Wordle                 |");
+                println!("+---------------------------------------+");
+            }
+            // print all tries
+            for tword in &mut tried_words {
+                tword.padding_print(10);
+            }
+            // print the keyboard
+            print_keyboard(&map);
         }
-        // print all tries
-        for tword in &mut tried_words {
-            tword.padding_print(10);
+        if won {
+            println!("Congradulations, YOU WON!!! 🎉️");
+        } else {
+            println!("Too Bad! You lose...😢️");
+            println!("The word was: {}", word_to_guess);
         }
-        // print the keyboard
-        print_keyboard(&map);
-    }
-    if won {
-        println!("Congradulations, YOU WON!!! 🎉️");
-    } else {
-        println!("Too Bad! You lose...😢️");
-        println!("The word was: {}", word_to_guess);
     }
 }
 
