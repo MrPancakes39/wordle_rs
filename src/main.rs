@@ -5,15 +5,12 @@ use rand::seq::SliceRandom;
 use std::{
     collections::HashMap,
     fmt,
-    fs::read_to_string,
     io::{stdin, stdout, Write},
 };
 
 lazy_static! {
-    static ref A: String = read_to_string("./data/answers.txt").expect("missing answers.txt");
-    static ref ANSWERS: Vec<&'static str> = A.lines().collect();
-    static ref B: String = read_to_string("./data/allowed.txt").expect("missing allowed.txt");
-    static ref ALLOWED: Vec<&'static str> = B.lines().collect();
+    static ref ANSWERS: Vec<&'static str> = include_str!("data/answers.txt").lines().collect();
+    static ref ALLOWED: Vec<&'static str> = include_str!("data/allowed.txt").lines().collect();
 }
 
 fn choose_word() -> String {
