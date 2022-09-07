@@ -1,20 +1,27 @@
 use ansi_term::{Color, Style};
 use clearscreen;
+use lazy_static::lazy_static;
 use rand::seq::SliceRandom;
 use std::{
     collections::HashMap,
     fmt,
+    fs::read_to_string,
     io::{stdin, stdout, Write},
 };
 
+lazy_static! {
+    static ref A: String = read_to_string("./data/answers.txt").expect("missing answers.txt");
+    static ref ANSWERS: Vec<&'static str> = A.lines().collect();
+    static ref B: String = read_to_string("./data/allowed.txt").expect("missing allowed.txt");
+    static ref ALLOWED: Vec<&'static str> = B.lines().collect();
+}
+
 fn choose_word() -> String {
-    let answers: Vec<&str> = include_str!("data/answers.txt").lines().collect();
-    String::from(*answers.choose(&mut rand::thread_rng()).unwrap())
+    String::from(*ANSWERS.choose(&mut rand::thread_rng()).unwrap())
 }
 
 fn valid_word(word: &str) -> bool {
-    let allowed: Vec<&str> = include_str!("data/allowed.txt").lines().collect();
-    allowed.contains(&word)
+    ALLOWED.contains(&word)
 }
 
 fn clear() {
